@@ -1,7 +1,3 @@
-# Marcus Gill International
-## Payment Form Project
+# Snippet Saver
 
-
-| Name | Last Build Status | Site Status/Link |
-|---|---|---|
-| Staging | [![Build Status](https://www.intellectual-tech.com/jenkins/buildStatus/icon?job=Marcus%20Gill%20Payment%20Form%20Staging)](https://www.intellectual-tech.com/jenkins/job/Marcus%20Gill%20Payment%20Form%20Staging/) | https://www.intellectual-tech.com/staging/marcus-gill/index.html |
+Simple little web app that stores and loads data from local storage and lets you save and load files with snippets and markdown descriptions of the snippets.
