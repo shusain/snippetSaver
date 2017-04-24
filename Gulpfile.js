@@ -35,6 +35,7 @@ gulp.task('serve', ['usemin', 'templates', 'favicons'], function(){
           if (!fileExists && fileName.indexOf("browser-sync-client") < 0 &&
               fileName.indexOf("templates") < 0 &&
               fileName.indexOf("jsconcat") < 0 &&
+              fileName.indexOf("json") < 0 &&
               fileName.indexOf("favicons") < 0) {
               req.url = "/" + defaultFile;
           }
@@ -61,7 +62,7 @@ gulp.task('clean', function(){
 gulp.task('favicons', ['clean'], function(){
   return gulp.src([
       'app/favicons/*.*',
-      'app/manifest.json'
+      'app/*.json'
     ],
     { base:'app' })
     .pipe(gulp.dest('dist'))
@@ -72,9 +73,9 @@ gulp.task('usemin', ['clean'], function() {
     .pipe(usemin({
       css: [ less(), rev() ],
       html: [ htmlmin({ collapseWhitespace: true }) ],
-      jsconcat: [ 'concat' ],
+      jsconcat: [ 'concat', uglify() ],
       js: [ babel({presets:["latest"]}), ngAnnotate(), uglify().on('error', gutil.log), rev() ],
-      inlinejs: [ babel({presets:["latest"]}), ngAnnotate(), uglify() ],
+      inlinejs: [ babel({presets:["latest"]}), ngAnnotate() ],
       inlinecss: [ less(), cleanCss(), 'concat' ]
     }))
     .pipe(gulp.dest('dist/'));

@@ -3,9 +3,6 @@ angular.module('snippetSaver')
     var ctrl = this;
     ctrl.SnippetService = SnippetService;
     
-    ctrl.changeHandler = function(file){
-      SnippetService.loadSnippets(file);
-    }
     ctrl.copy = (snippetId) => {
       var editor = EditorManager.snippetIdToEditor(snippetId);
       editor.selectAll();

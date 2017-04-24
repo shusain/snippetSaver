@@ -11,13 +11,13 @@
     <div class="form-group row">
       <label class="col-form-label col-sm-3">Title</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" ng-model="bc.SnippetService.currentSnippet.title"/>
+        <input type="text" class="form-control" placeholder="Snippet Title" ng-model="bc.SnippetService.currentSnippet.title"/>
       </div>
     </div>
     <div class="form-group row">
       <label class="col-form-label col-sm-3">Language</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" string-to-array ng-model="bc.SnippetService.currentSnippet.languages"/>
+        <input type="text" placeholder="Javascript, AngularJS" class="form-control" string-to-array ng-model="bc.SnippetService.currentSnippet.languages"/>
       </div>
     </div>
     <div class="form-group row description-row">
@@ -32,7 +32,7 @@
           </li>
         </ul>
         <div markdown-to-html="bc.SnippetService.currentSnippet.description || ''" ng-if="bc.showPreview"></div>
-        <textarea type="text" class="form-control" ng-model="bc.SnippetService.currentSnippet.description" ng-if="!bc.showPreview"></textarea>
+        <textarea placeholder="Description text" type="text" class="form-control" ng-model="bc.SnippetService.currentSnippet.description" ng-if="!bc.showPreview"></textarea>
       </div>
     </div>
     <div class="form-group row">
@@ -56,14 +56,30 @@
 <div class="container-fluid">
   
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-8">
       <div ng-click="bc.searchText=''" style="position:absolute;right:40px;top:5px;width:0px; cursor:pointer"><i class="fa fa-times"></i></div>
       <input placeholder="Search..." type="text" ng-model="bc.searchText" class="form-control">
+    </div>
+    <div class="col-md-4">
+      <div class="btn-group" role="group" aria-label="Code or Description">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          ng-click="bc.toggleDescription(false)">
+          code
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          ng-click="bc.toggleDescription(true)">
+          desc
+        </button>
+      </div>
     </div>
   </div>
   
   <div class="row">
-    <div class="col-md-4 col-lg-4" ng-repeat="snippet in bc.SnippetService.snippets|filter:bc.searchText track by snippet.id">
+    <div class="col-md-4 col-lg-4" ng-repeat="snippet in bc.SnippetService.snippets|filter:bc.searchText|orderBy:'-id' track by snippet.id">
       <div class="snippet-card card card-default">
         <div class="card-header">
           <button class="float-right btn-danger btn-sm btn" ng-click="bc.SnippetService.deleteSnippet(snippet.id)">

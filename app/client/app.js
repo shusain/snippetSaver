@@ -6,6 +6,8 @@ angular.module('snippetSaver', [
   'ngStorage',
   'ui.router',
   'templates',
-  'ng-showdown'
+  'ng-showdown',
+  'shDownloadModule',
+  'shClipboardModule'
   ]
 );

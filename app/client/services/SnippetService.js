@@ -1,67 +1,66 @@
+{
+  class SnippetService {
+    constructor(DownloadService, $localStorage, $rootScope, $q, $http){
+      this.snippets = [];
+      this.currentID = 0;
+      this.currentSnippet = {};
+
+      this.$localStorage = $localStorage;
+      this.$rootScope = $rootScope;
+      this.$q = $q;
+      this.DownloadService = DownloadService;
+
+      if(!$localStorage.snippets || $localStorage.snippets.length==0){
+        $http.get('data.json').then((resp) => {
+          this.snippets = $localStorage.snippets = resp.data;
+          this.currentID = _.last(this.snippets).id + 1;
+        });
+      }
+      else{
+        this.snippets = this.$localStorage.snippets;
+        this.currentID = _.last(this.snippets).id + 1;
+      }
+    }
+
+    addSnippet(snippet){
+      snippet.id = this.currentID++;
+      this.snippets.push(angular.copy(snippet));
+      this.saveSnippets();
+      this.currentSnippet = {};
+    }
+
+    deleteSnippet(snippetId){
+      this.$localStorage.snippets = this.snippets = _.filter(this.snippets, (obj) => obj.id!=snippetId);
+    }
+
+    getSnippetById(id){
+      return this.$q.when(_.find(this.snippets, {id:id}))
+    }
+
+    saveSnippets(){
+      this.$localStorage.snippets = this.snippets;
+    }
+
+    saveFile(){
+      this.DownloadService(angular.toJson(this.snippets), "data.json", "json");
+    }
+
+    loadFile(file){
+      var fr = new FileReader();
+    
+      fr.onload = (e) => {
+        this.$localStorage.snippets = this.snippets = angular.fromJson(fr.result);
+        this.currentID = _.last(this.snippets).id + 1;
+
+        this.$rootScope.$apply();
+      }
+      fr.readAsText(file[0]);
+    }
+
+  }
+
+  SnippetService.$inject['DownloadService', '$localStorage', '$rootScope', '$q', '$http']
 
   angular.module('snippetSaver')
-  .service('SnippetService', function($localStorage, $rootScope, $q){
-    
-    
-    
-    // Function to download data to a file
-    function download(data, filename, type) {
-        var a = document.createElement("a"),
-            file = new Blob([data], {type: type});
-        if (window.navigator.msSaveOrOpenBlob) // IE10+
-            window.navigator.msSaveOrOpenBlob(file, filename);
-        else { // Others
-            var url = URL.createObjectURL(file);
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(function() {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);  
-            }, 0); 
-        }
-    }
-    
-    let service = {
-      snippets: [],
-      currentID:0,
-      currentSnippet: {},
-      addSnippet: function(snippet){
-        snippet.id = service.currentID++;
-        service.snippets.push(angular.copy(snippet));
-        service.saveSnippets();
-        service.currentSnippet = {};
-      },
-      deleteSnippet: function(snippetId){
-        $localStorage.snippets = service.snippets = _.filter(service.snippets, (obj) => obj.id!=snippetId);
-      },
-      getSnippetById: function(id){
-        return $q.when(_.find(service.snippets, {id:id}))
-      },
-      saveSnippets: function(){
-        $localStorage.snippets = service.snippets;
-      },
-      saveFile: function(){
-        download(angular.toJson(service.snippets), "data.json", "json")
-      },
-      loadSnippets: function(file){
-        var fr = new FileReader();
-      
-        fr.onload = function(e){
-          $localStorage.snippets = service.snippets = angular.fromJson(fr.result);
-          service.currentID = _.last(service.snippets).id + 1;
-
-          $rootScope.$apply();
-        }
-        fr.readAsText(file[0]);
-      }
-    };
-
-    if($localStorage.snippets && $localStorage.snippets.length){
-      service.snippets = $localStorage.snippets;
-      service.currentID = _.last(service.snippets).id + 1;
-    }
-
-    return service;
-  });
+  .service('SnippetService', SnippetService);
+}
